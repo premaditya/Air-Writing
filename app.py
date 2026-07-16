@@ -126,12 +126,12 @@ with st.container(border=True):
     mode=WebRtcMode.SENDRECV,
     video_processor_factory=FrameProcessor,
     media_stream_constraints={
-    "video": {
-        "width": {"ideal": 480},
-        "height": {"ideal": 360},
-        "frameRate": {"ideal": 10},
+        "video": {
+            "width": {"ideal": 640},
+            "height": {"ideal": 480},
+            "frameRate": {"ideal": 15},
         },
-    "audio": False,
+        "audio": False,
     },
     rtc_configuration={
         "iceServers": [
