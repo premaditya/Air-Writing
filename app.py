@@ -138,7 +138,7 @@ with st.container(border=True):
             {"urls": ["stun:stun.l.google.com:19302"]}
         ]
     },
-    aasync_processing=False,
+    async_processing=False,
     video_html_attrs={
         "style": {
             "width": "100%",
