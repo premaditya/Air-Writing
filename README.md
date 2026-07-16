@@ -66,6 +66,9 @@ Hyperparameter tuning was performed using **GridSearchCV**, where KNN achieved t
 - F1-score
 
 ---
+## 🎨 UI Themes
+
+The repository includes `css_themes.txt`, which contains alternative CSS styles and design experiments for the Streamlit interface. The active theme used by the application is `style.css`.
 
 ## 📁 Project Structure
 
