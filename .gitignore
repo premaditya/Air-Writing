@@ -4,6 +4,7 @@ __pycache__/
 venv/
 env/
 air/
+air311/
 .venv
 .vscode/
 .idea/

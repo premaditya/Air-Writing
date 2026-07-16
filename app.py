@@ -122,36 +122,35 @@ st.subheader("📷 Live Camera")
 with st.container(border=True):
     #-------------- Start webcam stream and connect it to the frame processor -----------------
     webrtc_streamer(
-        key="air-writing",
-        mode=WebRtcMode.SENDRECV,
-        video_processor_factory=FrameProcessor,
-        media_stream_constraints={
-            "video": {
-                "width": {"ideal": 640},
-                "height": {"ideal": 480},
-                "frameRate": {"ideal": 15},
-            },
-            "audio": False,
+    key="air-writing",
+    mode=WebRtcMode.SENDRECV,
+    video_processor_factory=FrameProcessor,
+    media_stream_constraints={
+        "video": {
+            "width": {"ideal": 640},
+            "height": {"ideal": 480},
+            "frameRate": {"ideal": 15},
         },
-        rtc_configuration={
-            "iceServers": [
-                {"urls": ["stun:stun.l.google.com:19302"]}
-            ]
+        "audio": False,
+    },
+    rtc_configuration={
+        "iceServers": [
+            {"urls": ["stun:stun.l.google.com:19302"]}
+        ]
+    },
+    async_processing=True,
+    video_html_attrs={
+        "style": {
+            "width": "100%",
+            "max-width": "600px",
+            "height": "450px",
+            "object-fit": "cover",
+            "margin": "0 auto",
+            "border": "2px solid #38bdf8",
+            "border-radius": "12px",
+            "display": "block",
         },
-        async_processing=True,
-        #-------------- Custom styling for the video element -----------------
-        video_html_attrs={
-            "style": {
-                "width": "100%",
-                "max-width": "600px",
-                "height": "450px",
-                "object-fit": "cover",
-                "margin": "0 auto",
-                "border": "2px solid #38bdf8",
-                "border-radius": "12px",
-                "display": "block",
-            },
-            "controls": False,
-            "autoPlay": True,
-        },
-    )
+        "controls": False,
+        "autoPlay": True,
+    },
+)
