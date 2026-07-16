@@ -126,19 +126,19 @@ with st.container(border=True):
     mode=WebRtcMode.SENDRECV,
     video_processor_factory=FrameProcessor,
     media_stream_constraints={
-        "video": {
-            "width": {"ideal": 640},
-            "height": {"ideal": 480},
-            "frameRate": {"ideal": 15},
+    "video": {
+        "width": {"ideal": 480},
+        "height": {"ideal": 360},
+        "frameRate": {"ideal": 10},
         },
-        "audio": False,
+    "audio": False,
     },
     rtc_configuration={
         "iceServers": [
             {"urls": ["stun:stun.l.google.com:19302"]}
         ]
     },
-    async_processing=True,
+    aasync_processing=False,
     video_html_attrs={
         "style": {
             "width": "100%",
