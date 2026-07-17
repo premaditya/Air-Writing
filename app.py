@@ -93,8 +93,7 @@ with st.sidebar:
 #-------------- Main title and subtitle card -----------------
 
 st.warning(
-    "📱 Mobile browsers are currently not fully supported. "
-    "For the best experience, please use a laptop or desktop."
+    "📱 Best experienced on a laptop or desktop. Mobile browsers may not work correctly."
 )
 
 st.markdown(
