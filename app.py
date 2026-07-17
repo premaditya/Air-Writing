@@ -4,41 +4,60 @@ import streamlit as st
 from streamlit_webrtc import webrtc_streamer, WebRtcMode
 from backend.frame_processor import FrameProcessor
 
-def get_secret_or_env(name):
-    #-------------- Prefer Streamlit secrets, then fall back to environment variables -----------------
-    try:
-        return st.secrets.get(name, os.getenv(name))
-    except FileNotFoundError:
-        return os.getenv(name)
+import os
+import streamlit as st
+
+from streamlit_webrtc import webrtc_streamer, WebRtcMode
+from backend.frame_processor import FrameProcessor
 
 
 def get_rtc_configuration():
-    #-------------- Use TURN credentials from Streamlit secrets or environment variables -----------------
-    turn_username = get_secret_or_env("TURN_USERNAME")
-    turn_credential = get_secret_or_env("TURN_CREDENTIAL")
+    turn_username = st.secrets.get(
+        "TURN_USERNAME",
+        os.getenv("TURN_USERNAME")
+    )
+
+    turn_credential = st.secrets.get(
+        "TURN_CREDENTIAL",
+        os.getenv("TURN_CREDENTIAL")
+    )
 
     ice_servers = [
-        {"urls": ["stun:stun.relay.metered.ca:80", "stun:stun.l.google.com:19302"]}
+        {
+            "urls": [
+                "stun:stun.relay.metered.ca:80",
+                "stun:stun.l.google.com:19302",
+            ]
+        }
     ]
 
     if turn_username and turn_credential:
-        turn_servers = [
-            "turn:global.relay.metered.ca:80",
-            "turn:global.relay.metered.ca:80?transport=tcp",
-            "turn:global.relay.metered.ca:443",
-            "turns:global.relay.metered.ca:443?transport=tcp",
-        ]
-
-        ice_servers.extend(
+        ice_servers.extend([
             {
-                "urls": server,
+                "urls": "turn:global.relay.metered.ca:80",
                 "username": turn_username,
                 "credential": turn_credential,
-            }
-            for server in turn_servers
-        )
+            },
+            {
+                "urls": "turn:global.relay.metered.ca:80?transport=tcp",
+                "username": turn_username,
+                "credential": turn_credential,
+            },
+            {
+                "urls": "turn:global.relay.metered.ca:443",
+                "username": turn_username,
+                "credential": turn_credential,
+            },
+            {
+                "urls": "turns:global.relay.metered.ca:443?transport=tcp",
+                "username": turn_username,
+                "credential": turn_credential,
+            },
+        ])
 
-    return {"iceServers": ice_servers}
+    return {
+        "iceServers": ice_servers
+    }
 
 # --------------------------------
 # Page Configuration
@@ -158,44 +177,34 @@ st.subheader("📷 Live Camera")
 
 #-------------- Bordered container holding the webcam stream -----------------
 with st.container(border=True):
-    #-------------- Start webcam stream and connect it to the frame processor -----------------
     webrtc_streamer(
-    key="air-writing",
-    mode=WebRtcMode.SENDRECV,
-    video_processor_factory=FrameProcessor,
-    media_stream_constraints={
-        "video": {
-            "width": {"ideal": 640},
-            "height": {"ideal": 480},
-            "frameRate": {"ideal": 15},
-            "width": {"ideal": 320},
-            "height": {"ideal": 240},
-            "frameRate": {"ideal": 10, "max": 10},
+        key="air-writing",
+        mode=WebRtcMode.SENDRECV,
+        video_processor_factory=FrameProcessor,
+        media_stream_constraints={
+            "video": {
+                "width": {"ideal": 640},
+                "height": {"ideal": 480},
+                "frameRate": {"ideal": 15},
+            },
+            "audio": False,
         },
-        "audio": False,
-    },
-    rtc_configuration={
-        "iceServers": [
-            {"urls": ["stun:stun.l.google.com:19302"]}
-        ]
-    },
-    rtc_configuration=get_rtc_configuration(),
-    async_processing=True,
-    video_html_attrs={
-        "style": {
-            "width": "100%",
-            "max-width": "600px",
-            "height": "450px",
-            "object-fit": "cover",
-            "margin": "0 auto",
-            "border": "2px solid #38bdf8",
-            "border-radius": "12px",
-            "display": "block",
+        rtc_configuration=get_rtc_configuration(),
+        async_processing=True,
+        video_html_attrs={
+            "style": {
+                "width": "100%",
+                "max-width": "600px",
+                "height": "450px",
+                "object-fit": "cover",
+                "margin": "0 auto",
+                "border": "2px solid #38bdf8",
+                "border-radius": "12px",
+                "display": "block",
+            },
+            "controls": False,
+            "autoPlay": True,
+            "playsInline": True,
+            "muted": True,
         },
-        "controls": False,
-        "autoPlay": True,
-        "playsInline": True,
-        "muted": True,
-    },
-)
-)
+    )
