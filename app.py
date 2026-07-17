@@ -1,6 +1,44 @@
+import os
+
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, WebRtcMode
 from backend.frame_processor import FrameProcessor
+
+def get_secret_or_env(name):
+    #-------------- Prefer Streamlit secrets, then fall back to environment variables -----------------
+    try:
+        return st.secrets.get(name, os.getenv(name))
+    except FileNotFoundError:
+        return os.getenv(name)
+
+
+def get_rtc_configuration():
+    #-------------- Use TURN credentials from Streamlit secrets or environment variables -----------------
+    turn_username = get_secret_or_env("TURN_USERNAME")
+    turn_credential = get_secret_or_env("TURN_CREDENTIAL")
+
+    ice_servers = [
+        {"urls": ["stun:stun.relay.metered.ca:80", "stun:stun.l.google.com:19302"]}
+    ]
+
+    if turn_username and turn_credential:
+        turn_servers = [
+            "turn:global.relay.metered.ca:80",
+            "turn:global.relay.metered.ca:80?transport=tcp",
+            "turn:global.relay.metered.ca:443",
+            "turns:global.relay.metered.ca:443?transport=tcp",
+        ]
+
+        ice_servers.extend(
+            {
+                "urls": server,
+                "username": turn_username,
+                "credential": turn_credential,
+            }
+            for server in turn_servers
+        )
+
+    return {"iceServers": ice_servers}
 
 # --------------------------------
 # Page Configuration
@@ -130,6 +168,9 @@ with st.container(border=True):
             "width": {"ideal": 640},
             "height": {"ideal": 480},
             "frameRate": {"ideal": 15},
+            "width": {"ideal": 320},
+            "height": {"ideal": 240},
+            "frameRate": {"ideal": 10, "max": 10},
         },
         "audio": False,
     },
@@ -138,6 +179,7 @@ with st.container(border=True):
             {"urls": ["stun:stun.l.google.com:19302"]}
         ]
     },
+    rtc_configuration=get_rtc_configuration(),
     async_processing=True,
     video_html_attrs={
         "style": {
@@ -152,5 +194,8 @@ with st.container(border=True):
         },
         "controls": False,
         "autoPlay": True,
+        "playsInline": True,
+        "muted": True,
     },
+)
 )
