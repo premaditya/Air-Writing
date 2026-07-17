@@ -91,6 +91,12 @@ with st.sidebar:
 # Header
 # --------------------------------
 #-------------- Main title and subtitle card -----------------
+
+st.warning(
+    "📱 Mobile browsers are currently not fully supported. "
+    "For the best experience, please use a laptop or desktop."
+)
+
 st.markdown(
     """
     <div class="main-header">
